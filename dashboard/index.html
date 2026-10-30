@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartHome VLSI - IoT Digital Logic Control Center</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand-group">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">SmartHome VLSI</h1>
+          <p class="brand-subtitle">IoT Home Automation via Digital Logic & Energy Optimization</p>
+        </div>
+      </div>
+
+      <div class="header-badges">
+        <div class="badge connection-badge" id="wifiStatus">
+          <span class="status-dot online"></span>
+          <span>Wi-Fi: Connected</span>
+        </div>
+        <button id="bleConnectBtn" class="btn btn-secondary ble-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M7 12l5 5V7l-5 5zm5-9.82L17.82 7 13 11.82V2.18zM13 12.18L17.82 17 12 21.82V12.18zM11 5.41L8.41 8 11 10.59V5.41zM11 13.41L8.41 16 11 18.59V13.41z"/>
+          </svg>
+          <span id="bleBtnText">Connect BLE</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Top Metric Overview Cards -->
+    <section class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-label">Digital Bus Architecture</span>
+          <span class="chip chip-purple">VLSI 74HC138/148</span>
+        </div>
+        <div class="metric-value" id="busSavingMetric">5 GPIOs Saved</div>
+        <div class="metric-caption">3-bit Address Decoded & Multiplexed</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-label">Power Mode</span>
+          <span class="chip chip-green" id="powerModeBadge">ECO Mode</span>
+        </div>
+        <div class="metric-value" id="powerSavingMetric">95.3% Saved</div>
+        <div class="metric-caption">Dynamic Clock Gating + EXT0 Sleep</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-label">Active Actuators</span>
+          <span class="chip chip-blue" id="activeLoadCount">2 / 8 Active</span>
+        </div>
+        <div class="metric-value" id="estimatedPower">48.2 W</div>
+        <div class="metric-caption">Combined AC/DC Appliance Draw</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-label">Safety Status</span>
+          <span class="chip chip-emerald" id="safetyStatusBadge">All Secure</span>
+        </div>
+        <div class="metric-value text-emerald" id="safetyStatusText">Normal</div>
+        <div class="metric-caption">Hardware Priority Interlock Ready</div>
+      </div>
+    </section>
+
+    <!-- Main Workspace: Actuators + Sensor Panels -->
+    <div class="main-layout">
+      <!-- Actuators Panel -->
+      <section class="panel actuators-panel">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <h2 class="panel-title">Decoded Actuators (3-to-8 Demux 74HC138)</h2>
+            <p class="panel-sub">Controlled via 3-bit binary lines (A0, A1, A2) and Strobe Enable</p>
+          </div>
+          <div class="panel-actions">
+            <button class="btn btn-sm" id="allOffBtn">All Off</button>
+          </div>
+        </div>
+
+        <div class="actuator-grid" id="actuatorGrid">
+          <!-- Actuator cards generated dynamically -->
+        </div>
+      </section>
+
+      <!-- Sensors & Digital Logic Panel -->
+      <section class="panel sensors-panel">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <h2 class="panel-title">Multiplexed Sensors (8-to-1 MUX 74HC151)</h2>
+            <p class="panel-sub">Scanned sequentially on single pin PIN_MUX_SIG</p>
+          </div>
+          <div class="panel-actions">
+            <span class="scan-pill">MUX Bus Scanned: 1.5s</span>
+          </div>
+        </div>
+
+        <div class="sensor-list" id="sensorList">
+          <!-- Sensor rows generated dynamically -->
+        </div>
+
+        <!-- Priority Encoder Live Priority Output -->
+        <div class="priority-box">
+          <div class="priority-header">
+            <span>74HC148 Priority Encoder Active IRQ:</span>
+            <span class="priority-code" id="priorityEncoderCode">Code: 000 (Idle)</span>
+          </div>
+          <div class="priority-bar-track">
+            <div class="priority-bar-fill" id="priorityFill" style="width: 0%;"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Power Management & Mode Control Section -->
+    <section class="panel power-panel">
+      <div class="panel-header">
+        <div class="panel-title-group">
+          <h2 class="panel-title">Power Optimization & VLSI Low-Power Controls</h2>
+          <p class="panel-sub">Configure dynamic frequency scaling, high-side MOSFET sensor power gating, and deep sleep</p>
+        </div>
+      </div>
+
+      <div class="power-controls-grid">
+        <div class="power-mode-option selected" data-mode="1" id="modeEco">
+          <div class="mode-icon eco-icon">🌱</div>
+          <div class="mode-details">
+            <h3>ECO Mode (Recommended)</h3>
+            <p>P-MOSFET duty-cycled sensor bus (2.5% on), CPU at 80 MHz, Light sleep between Wi-Fi beacons.</p>
+          </div>
+          <div class="mode-tag">~2.5 mA avg</div>
+        </div>
+
+        <div class="power-mode-option" data-mode="0" id="modeNormal">
+          <div class="mode-icon normal-icon">⚡</div>
+          <div class="mode-details">
+            <h3>Normal Active Mode</h3>
+            <p>Continuous sensor sampling, 160 MHz CPU, low-latency Wi-Fi & BLE advertising active.</p>
+          </div>
+          <div class="mode-tag">~160 mA</div>
+        </div>
+
+        <div class="power-mode-option" data-mode="2" id="modeDeepSleep">
+          <div class="mode-icon sleep-icon">🌙</div>
+          <div class="mode-details">
+            <h3>Ultra-Low-Power Deep Sleep</h3>
+            <p>Main CPU powered off (15 µA). Woken up instantaneously by 74HC148 Priority Encoder on EXT0 pin.</p>
+          </div>
+          <div class="mode-tag">~15 µA (420+ Days)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div>IoT Home Automation System &copy; 2026 &bull; Digital Logic, VLSI IP & ESP32</div>
+      <div class="footer-links">
+        <span>Hardware Interlock: ACTIVE</span>
+        <span>&bull;</span>
+        <button id="simToggleBtn" class="link-btn">Demo Mode: ON</button>
+      </div>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
